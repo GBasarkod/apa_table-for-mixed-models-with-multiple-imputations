@@ -1,0 +1,54 @@
+---
+title             : "Using apa_table() for Mixed Models With Imputed Data"
+shorttitle        : "apa_table: Mixed Models With MI"
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : no
+mask              : no
+draft             : no
+
+documentclass     : "apa7"
+csl               : "apa7.csl"
+classoption       : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r setup, include = FALSE}
+#tinytex::install_tinytex()
+#devtools::install_github("crsh/papaja")
+library(papaja)
+library(dplyr)
+load("C:/Users/Geetanjali/OneDrive - Australian Catholic University/Github/PISATable.RData") #file where you stored output 't' from 'Prep code.R'.
+```
+
+
+Table \@ref(tab:table), on the next page, presents results from three multilevel models predicting student math efficacy. These models were run using the lme4 package, with the dataset "pisamaths" from the mitools package. Data were imputed using the Amelia package. This pdf was created using the papaja package.
+
+(ref:note) Beta estimates for fixed effects that differ from zero by more than two standard errors *(SE)* are statistically significant (*p* < .05). Random effects are presented in standard deviations *(SD)*.
+
+```{r table, warning = F}
+
+t %>% 
+  mutate(rowname = case_when(
+      rowname == "(Intercept)" ~ "Intercept", #Give the variables nicer names
+      rowname == "MATHACH"     ~ "Math Achievement",
+      rowname == "ST04Q01Male" ~ "Sex (Male)",
+      rowname == "Residual_sd__Observation" ~ "Residual",
+      rowname == "SCHOOLID_sd__(Intercept)" ~ "Intercept | School",
+      rowname == "SCHOOLID_sd__MATHACH"     ~ "Math Ach | School")) %>%
+      slice(1:3,5:6,4) %>%  #if you want to change the order in which the results occur
+    apa_table(caption = "Results From Survey-Weighted Multilevel Models Predicting Math Efficacy", #table caption
+            col_spanners = list("Model 1" = c(2,3), #useful if you have more than one table in a model.
+                                "Model 2" = c(4,5), #adds "Model #" above the respective beta and SE columns
+                                "Model 3" = c(6,7)),
+            col.names = c("", "β", "$\\textit{SE}$", "β", "$\\textit{SE}$", "β", "$\\textit{SE}$"), #column headings
+            stub_indents = list("Fixed Effects" = 1:3, "Random Effects$\\textit{ (SD)}$" = 4:6), #Add rows to indicate which results are for fixed effects and which are for random effects.
+            digits = 3, #number of digits after decimal place.
+            align = c("l", rep("c", 6)), #column alignment. Left for column with variable names, center for all others
+            format.args = list(na_string = ""), #remove NAs
+            note = "(ref:note)") #Add table note. Easier to call it this way if you need to add italics etc.
+
+```
+
