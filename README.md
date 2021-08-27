@@ -1,8 +1,8 @@
 # apa_table-for-mixed-models-with-multiple-imputations
-This is a demonstration of how to using papaja::apa_table() to format tables with fixed and random effects. 
+This is a demonstration of how to use papaja::apa_table() to format tables with fixed and random effects. 
 
 I use the following R packages: 
-1. mitools - For data and results extraction
+1. mitools - For data and extracting results
 2. Amelia - For multiple imputation
 3. tidyverse - For data wrangling
 4. lme4 - For multilevel models
